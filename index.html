@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0d14">
+  <title>Auditoría Integral y Diagnóstico de Vehículo Usado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="glitch-intro">
+
+<header id="main-header">
+  <div class="header-content">
+    <div class="header-top">
+      <h1 id="app-title">🛡 AUDITORÍA INTEGRAL DE VEHÍCULO USADO</h1>
+      <button class="lang-btn" onclick="toggleLanguage()" id="lang-toggle-btn">🇬🇧 English</button>
+    </div>
+    <div class="sub" id="app-sub">Verificación DGT, prueba de verificación de inundación, transmisión y base de datos local SQLite/IndexedDB.</div>
+
+    <div class="audit-dashboard">
+      <div>
+        <span id="verdict-badge" class="verdict-badge v-good">SIN EVALUAR</span>
+        <div style="font-size: 12px; color: var(--muted); margin-top: 4px;" id="stats-detail">0 Comprobados · 0 Fallos</div>
+      </div>
+      <div class="score-box">
+        <div class="score-val" id="score-display">100</div>
+        <div style="font-size: 10px; color: var(--muted); font-family: 'Orbitron';" id="lbl-confidence">ÍNDICE DE CONFIANZA</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="card">
+    <h2 id="sec-car-selection">1 · Selección de Vehículo Usado y Datos Iniciales</h2>
+    <div class="grid-3">
+      <div class="field">
+        <label id="lbl-brand">Marca (Top 10 España)</label>
+        <select id="car_brand" onchange="onBrandChange()">
+          <option value="">-- Seleccionar Marca --</option>
+        </select>
+      </div>
+      <div class="field">
+        <label id="lbl-model">Modelo</label>
+        <select id="car_model">
+          <option value="">-- Seleccionar Modelo --</option>
+        </select>
+      </div>
+      <div class="field">
+        <label id="lbl-fuel">Motor / Propulsión</label>
+        <select id="car_fuel">
+          <option value="Gasolina">Gasolina</option>
+          <option value="Diésel">Diésel</option>
+          <option value="Híbrido (HEV)">Híbrido (HEV)</option>
+          <option value="Híbrido Enchufable (PHEV)">Híbrido Enchufable (PHEV)</option>
+          <option value="Eléctrico (EV)">Eléctrico (EV)</option>
+          <option value="GLP / GNC">GLP / GNC</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top: 12px;">
+      <div class="field"><label id="lbl-version">Versión / Trim / Acabado</label><input id="car_version" placeholder="Ej. 2.0 TDI 150cv / Style / GT Line"></div>
+      <div class="field"><label id="lbl-year">Año de Matriculación</label><input id="car_year" type="number" placeholder="Ej. 2019"></div>
+      <div class="field"><label id="lbl-price">Precio Venta (€)</label><input id="price" type="number" placeholder="15000"></div>
+      <div class="field"><label id="lbl-km">Kilometraje Declarado</label><input id="km" type="number" placeholder="125000"></div>
+      <div class="field"><label id="lbl-vin">Matrícula / VIN</label><input id="vin_plate" placeholder="1234 ABC / WBA..."></div>
+      <div class="field"><label id="lbl-repairs">Presupuesto Reparaciones Estimado (€)</label><input id="repair_cost" type="number" placeholder="Ej. 950"></div>
+    </div>
+
+    <div class="toolbar" style="margin-top: 15px;">
+      <button class="action-btn primary" onclick="saveCarToDB()" id="btn-save-db">💾 GUARDAR EN BASE DE DATOS</button>
+      <button class="action-btn secondary" onclick="clearForm()" id="btn-new-car">➕ NUEVA EVALUACIÓN</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-db-list">2 · Registro de Vehículos Guardados (Base de Datos Local)</h2>
+    <div class="db-table-wrapper">
+      <table class="db-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th id="th-car">Vehículo</th>
+            <th id="th-engine">Motor / Año</th>
+            <th id="th-price">Precio</th>
+            <th id="th-score">Puntuación</th>
+            <th id="th-actions">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="db-cars-list">
+          <tr><td colspan="6" style="text-align: center; color: var(--muted);" id="txt-no-cars">Cargando base de datos...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-ident">3 · Identificación y Kilometraje (Cruce de Fuentes)</h2>
+    <div id="section-1"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-docs">4 · Documentación y Situación Legal</h2>
+    <div id="section-2"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-flood">5 · Carrocería, Golpes, Corrosión y Verificación de Inundación</h2>
+    <div id="section-3"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-engine">6 · Motor y Sistema de Propulsión</h2>
+    <div id="section-4"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-trans">7 · Cambio, Embrague y Transmisión</h2>
+    <div id="section-5"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-chassis">8 · Suspensión, Dirección, Frenos y Neumáticos</h2>
+    <div id="section-6"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-elec">9 · Electricidad, Seguridad y Climatización</h2>
+    <div id="section-7"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-workshop">10 · Elevador + Diagnosis Independiente en Taller</h2>
+    <div id="section-8"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-drive">11 · Prueba de Conducción Dinámica</h2>
+    <div id="section-9"></div>
+  </section>
+
+  <section class="card danger-zone">
+    <h2 id="sec-stop">12 · Banderas Rojas y Señales para Detener la Compra</h2>
+    <div id="section-10"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="sec-notes">Notas Finales y Estrategia de Negociación</h2>
+    <textarea id="notes" style="min-height: 100px;" placeholder="Anota códigos de error OBD2, facturas verificadas y presupuesto de reparaciones..."></textarea>
+    <div class="toolbar">
+      <button class="action-btn primary" onclick="window.print()" id="btn-pdf">🖨️ EXPORTAR INFORME PDF</button>
+      <button class="action-btn danger" onclick="resetAudit()" id="btn-reset">🗑 REINICIAR PRUEBAS ACTUALES</button>
+    </div>
+  </section>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>
