@@ -37,3 +37,4 @@ Basado en el análisis de mercado del Toyota C-HR (1.8 125h Active/Advance) y al
 ## 🚀 Inicio Rápido
 
 Abre el archivo `index.html` en un navegador web o utiliza la extensión **Live Server** de Visual Studio Code.
+# test-car-app
